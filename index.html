@@ -23,18 +23,13 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap">
     <link id="dark-style" class="dark-theme" rel="stylesheet" href="./assets/styles/style-dark.css">
     <style>
-        body, .case-item__caption span, .review-item__caption, .title, .td-name, .td-bio, .progress-text span, .footer {
-            font-family: 'Be Vietnam Pro', sans-serif;
-        }
         .case-item__caption span {
+            font-family: 'Be Vietnam Pro', sans-serif;
             cursor: pointer;
             user-select: none;
         }
         .case-item__caption span:hover {
             text-decoration: underline;
-        }
-        .swiper-pagination-bullet {
-            cursor: pointer;
         }
     </style>
 </head>
@@ -128,7 +123,7 @@
                             <h2 class="title title--h3 title__separate">About Me</h2>
                             <div class="swiper-container js-carousel-review">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide review-item" data-category="tha-thinh">
+                                    <div class="swiper-slide review-item">
                                         <svg class="avatar avatar--80" viewBox="0 0 84 84">
                                             <g class="avatar__hexagon">
                                                 <image xlink:href="https://i.imgur.com/pn00UUp.gif" height="100%"
@@ -138,9 +133,9 @@
                                         <h4 class="title title--h5">
                                             <a class="td-caption" href="#">Thả Thính</a>
                                         </h4>
-                                        <p class="review-item__caption tha-thinh-quote"></p>
+                                        <p class="review-item__caption">Tuy anh không hoàn hảo, nhưng anh là duy nhất.</p>
                                     </div>
-                                    <div class="swiper-slide review-item" data-category="cham-ngon">
+                                    <div class="swiper-slide review-item">
                                         <svg class="avatar avatar--80" viewBox="0 0 84 84">
                                             <g class="avatar__hexagon">
                                                 <image xlink:href="https://i.imgur.com/Nao5Nvi.png" height="100%"
@@ -150,7 +145,7 @@
                                         <h4 class="title title--h5">
                                             <a class="td-caption" href="#">Châm Ngôn</a>
                                         </h4>
-                                        <p class="review-item__caption cham-ngon-quote"></p>
+                                        <p class="review-item__caption">Nơi đây không phải thiên đình nên quý khách đừng cho mình là thượng đế.</p>
                                     </div>
                                 </div>
                                 <div class="swiper-pagination"></div>
@@ -271,7 +266,6 @@
     </main>
     <script src="./assets/js/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="./assets/js/plugins.js"></script>
     <script src="./assets/js/common.min.js"></script>
     <script src="./assets/js/index.js"></script>
@@ -302,63 +296,6 @@
             console.error('Lỗi khi sao chép: ', err);
         });
     }
-    const thaThinhQuotes = [
-        "Anh không đẹp trai, nhưng đủ để khiến bạn tò mò.",
-        "Cà phê thì đắng, còn anh thì thích ngọt ngào với bạn.",
-        "Anh không giỏi toán, nhưng biết tính chuyện tương lai với bạn.",
-        "Mặt trời mọc ở đằng đông, còn anh thì lạc lối vì bạn."
-    ];
-    const chamNgonQuotes = [
-        "Đừng chờ cơ hội, tự tạo nó mà sống.",
-        "Thành công không phải đích đến, mà là hành trình bạn chọn.",
-        "Học từ thất bại, đừng để nó định nghĩa bạn.",
-        "Thời gian không chờ ai, nhưng bạn có thể đuổi theo nó."
-    ];
-    function setRandomQuotes() {
-        const thaThinhElement = document.querySelector('.tha-thinh-quote');
-        const chamNgonElement = document.querySelector('.cham-ngon-quote');
-        const randomThaThinh = thaThinhQuotes[Math.floor(Math.random() * thaThinhQuotes.length)];
-        const randomChamNgon = chamNgonQuotes[Math.floor(Math.random() * chamNgonQuotes.length)];
-        thaThinhElement.textContent = randomThaThinh;
-        chamNgonElement.textContent = randomChamNgon;
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        setRandomQuotes();
-        const swiper = new Swiper('.js-carousel-review', {
-            loop: false,
-            speed: 800,
-            autoplay: {
-                delay: 5000,
-                reverseDirection: false,
-                pauseOnMouseEnter: true,
-                disableOnInteraction: false
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-                dynamicBullets: true
-            },
-            slidesPerView: 1,
-            spaceBetween: 20,
-            effect: 'fade',
-            fadeEffect: {
-                crossFade: true
-            },
-            touchRatio: 1,
-            on: {
-                slideChange: function() {
-                    if (this.isEnd) {
-                        this.params.autoplay.reverseDirection = true;
-                        this.autoplay.start();
-                    } else if (this.isBeginning) {
-                        this.params.autoplay.reverseDirection = false;
-                        this.autoplay.start();
-                    }
-                    setRandomQuotes();
-                }
-            }
-        });
-    });
     </script>
 </body>
 </html>
