@@ -59,17 +59,11 @@
         #main-content.visible {
             display: block;
         }
-        .loading-text {
-            color: white;
-            margin-top: 20px;
-            font-size: 18px;
-        }
     </style>
 </head>
 <body class="bg-triangles">
     <div id="turnstile-overlay">
         <div class="cf-turnstile" data-sitekey="0x4AAAAAABfVNd2-10jMYn6n" data-theme="dark" data-callback="onTurnstileSuccess"></div>
-        <div id="loading-text" class="loading-text"></div>
     </div>
 
     <div id="main-content">
@@ -317,14 +311,8 @@
 
     <script>
         function onTurnstileSuccess(token) {
-            const loadingText = document.getElementById('loading-text');
-            loadingText.textContent = 'Xác minh thành công! Đang chuyển hướng...';
-            
-            setTimeout(function() {
-                document.getElementById('turnstile-overlay').classList.add('hidden');
-                document.getElementById('main-content').classList.add('visible');
-                localStorage.setItem('cf_verified', 'true');
-            }, 1000);
+            localStorage.setItem('cf_verified', 'true');
+            location.reload();
         }
 
         document.addEventListener('DOMContentLoaded', function() {
