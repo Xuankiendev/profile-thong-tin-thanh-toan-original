@@ -23,8 +23,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap">
     <link id="dark-style" class="dark-theme" rel="stylesheet" href="./assets/styles/style-dark.css">
     <style>
-        .case-item__caption span {
+        body, .case-item__caption span, .review-item__caption, .title, .td-name, .td-bio, .progress-text span, .footer {
             font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        .case-item__caption span {
             cursor: pointer;
             user-select: none;
         }
@@ -296,7 +298,6 @@
             console.error('Lỗi khi sao chép: ', err);
         });
     }
-    // Quote arrays
     const thaThinhQuotes = [
         "Tuy anh không hoàn hảo, nhưng anh là duy nhất.",
         "Anh không hứa cho em cả thế giới, nhưng anh hứa dành cả thế giới để yêu thương và che chở cho em.",
@@ -309,7 +310,6 @@
         "Đừng chạy theo những gì lấp lánh, hãy chạy theo những gì khiến bạn hạnh phúc.",
         "Người thông minh không phải là người biết tất cả, mà là người biết khi nào cần học."
     ];
-    // Randomize quote function
     function setRandomQuotes() {
         const thaThinhElement = document.querySelector('.tha-thinh-quote');
         const chamNgonElement = document.querySelector('.cham-ngon-quote');
@@ -318,18 +318,25 @@
         thaThinhElement.textContent = randomThaThinh;
         chamNgonElement.textContent = randomChamNgon;
     }
-    // Initialize Swiper with ping-pong effect
     document.addEventListener('DOMContentLoaded', function() {
-        setRandomQuotes(); // Set initial random quotes
+        setRandomQuotes();
         const swiper = new Swiper('.js-carousel-review', {
             loop: false,
+            speed: 800,
             autoplay: {
                 delay: 3000,
-                reverseDirection: false
+                reverseDirection: false,
+                pauseOnMouseEnter: true
             },
             pagination: {
                 el: '.swiper-pagination',
                 clickable: true
+            },
+            slidesPerView: 1,
+            spaceBetween: 20,
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
             },
             on: {
                 slideChange: function() {
@@ -340,7 +347,7 @@
                         this.params.autoplay.reverseDirection = false;
                         this.autoplay.start();
                     }
-                    setRandomQuotes(); // Change quotes on slide change
+                    setRandomQuotes();
                 }
             }
         });
