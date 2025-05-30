@@ -102,7 +102,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-lg-6">
+                                <div class="col- SOCKETS 12 col-lg-6">
                                     <div class="case-item box box__second">
                                         <img class="case-item__icon" src="https://i.imgur.com/CGxIJvK.png"
                                             alt="" />
@@ -307,10 +307,10 @@
         });
     }
     const thaThinhQuotes = [
-        "Anh không đẹp trai, nhưng đủ để khiến em tò mò.",
-        "Cà phê thì đắng, còn anh thì thích ngọt ngào với em.",
-        "Anh không giỏi toán, nhưng biết tính chuyện tương lai với em.",
-        "Mặt trời mọc ở đằng đông, còn anh thì lạc lối vào tim em."
+        "Anh không đẹp trai, nhưng đủ để khiến bạn tò mò.",
+        "Cà phê thì đắng, còn anh thì thích ngọt ngào với bạn.",
+        "Anh không giỏi toán, nhưng biết tính chuyện tương lai với bạn.",
+        "Mặt trời mọc ở đằng đông, còn anh thì lạc lối vì bạn."
     ];
     const chamNgonQuotes = [
         "Đừng chờ cơ hội, tự tạo nó mà sống.",
@@ -340,7 +340,10 @@
             pagination: {
                 el: '.about-me-pagination',
                 clickable: true,
-                dynamicBullets: true
+                type: 'bullets',
+                renderBullet: function (index, className) {
+                    return '<span class="' + className + '"></span>';
+                }
             },
             slidesPerView: 1,
             spaceBetween: 20,
@@ -349,7 +352,6 @@
                 crossFade: true
             },
             touchRatio: 1,
-            watchSlidesProgress: true,
             on: {
                 slideChange: function() {
                     if (this.isEnd) {
@@ -360,6 +362,10 @@
                         this.autoplay.start();
                     }
                     setRandomQuotes();
+                    this.pagination.update();
+                },
+                init: function() {
+                    this.pagination.update();
                 }
             }
         });
