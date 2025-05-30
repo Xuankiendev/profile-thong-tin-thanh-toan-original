@@ -311,15 +311,12 @@
 
     <script>
         function onTurnstileSuccess(token) {
-            localStorage.setItem('cf_verified', 'true');
-            if (!sessionStorage.getItem('hasRefreshed')) {
-                sessionStorage.setItem('hasRefreshed', 'true');
-                window.location.reload();
-            }
+            window.location.href = window.location.pathname + '?verified=true';
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('cf_verified') === 'true') {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('verified') === 'true') {
                 document.getElementById('turnstile-overlay').classList.add('hidden');
                 document.getElementById('main-content').classList.add('visible');
             } else {
