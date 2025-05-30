@@ -50,20 +50,6 @@
         #turnstile-overlay.hidden {
             display: none;
         }
-        #turnstile-overlay button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        #turnstile-overlay button:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-        }
         .cf-turnstile {
             transform: scale(1.3);
         }
@@ -73,14 +59,17 @@
         #main-content.visible {
             display: block;
         }
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body class="bg-triangles">
     <div id="turnstile-overlay">
-        <form action="/verify" method="POST" id="verifyForm">
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAABfVNd2-10jMYn6n" data-theme="dark" data-callback="onTurnstileSuccess"></div>
-            <button type="submit" disabled id="submitBtn">Tiếp tục</button>
-        </form>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAABfVNd2-10jMYn6n" data-theme="dark" data-callback="onTurnstileSuccess"></div>
+        <div id="loading-text" class="loading-text"></div>
     </div>
 
     <div id="main-content">
@@ -328,16 +317,15 @@
 
     <script>
         function onTurnstileSuccess(token) {
-            document.getElementById('submitBtn').disabled = false;
-        }
-
-        document.getElementById('verifyForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            document.getElementById('turnstile-overlay').classList.add('hidden');
-            document.getElementById('main-content').classList.add('visible');
+            const loadingText = document.getElementById('loading-text');
+            loadingText.textContent = 'Xác minh thành công! Đang chuyển hướng...';
             
-            localStorage.setItem('cf_verified', 'true');
-        });
+            setTimeout(function() {
+                document.getElementById('turnstile-overlay').classList.add('hidden');
+                document.getElementById('main-content').classList.add('visible');
+                localStorage.setItem('cf_verified', 'true');
+            }, 1000);
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             if(localStorage.getItem('cf_verified') === 'true') {
