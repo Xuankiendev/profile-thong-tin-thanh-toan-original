@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap">
     <link id="dark-style" class="dark-theme" rel="stylesheet" href="./assets/styles/style-dark.css">
     <style>
-        body, .case-item__caption span, .review-item__caption, .title, .td-bio, .progress-text span, .footer {
+        body, .case-item__caption span, .review-item__caption, .title, .td-name, .td-bio, .progress-text span, .footer, .tha-thinh-quote, .cham-ngon-quote {
             font-family: 'Be Vietnam Pro', sans-serif;
         }
         .case-item__caption span {
@@ -33,11 +33,11 @@
         .case-item__caption span:hover {
             text-decoration: underline;
         }
-        .review-item__caption {
-            font-family: 'Be Vietnam Pro', sans-serif !important;
+        .swiper-pagination-bullet {
+            cursor: pointer;
         }
-        .td-name {
-            font-family: inherit !important;
+        .about-me-pagination {
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -128,29 +128,34 @@
                         </div>
                         <div class="box-inner box-inner--rounded">
                             <h2 class="title title--h3 title__separate">About Me</h2>
-                            <div class="review-item">
-                                <svg class="avatar avatar--80" viewBox="0 0 84 84">
-                                    <g class="avatar__hexagon">
-                                        <image xlink:href="https://i.imgur.com/pn00UUp.gif" height="100%"
-                                            width="100%" />
-                                    </g>
-                                </svg>
-                                <h4 class="title title--h5">
-                                    <a class="td-caption" href="#">Thả Thính</a>
-                                </h4>
-                                <p class="review-item__caption tha-thinh-quote"></p>
-                            </div>
-                            <div class="review-item">
-                                <svg class="avatar avatar--80" viewBox="0 0 84 84">
-                                    <g class="avatar__hexagon">
-                                        <image xlink:href="https://i.imgur.com/Nao5Nvi.png" height="100%"
-                                            width="100%" />
-                                    </g>
-                                </svg>
-                                <h4 class="title title--h5">
-                                    <a class="td-caption" href="#">Châm Ngôn</a>
-                                </h4>
-                                <p class="review-item__caption cham-ngon-quote"></p>
+                            <div class="swiper-container js-carousel-review">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide review-item" data-category="tha-thinh">
+                                        <svg class="avatar avatar--80" viewBox="0 0 84 84">
+                                            <g class="avatar__hexagon">
+                                                <image xlink:href="https://i.imgur.com/pn00UUp.gif" height="100%"
+                                                    width="100%" />
+                                            </g>
+                                        </svg>
+                                        <h4 class="title title--h5">
+                                            <a class="td-caption" href="#">Thả Thính</a>
+                                        </h4>
+                                        <p class="review-item__caption tha-thinh-quote"></p>
+                                    </div>
+                                    <div class="swiper-slide review-item" data-category="cham-ngon">
+                                        <svg class="avatar avatar--80" viewBox="0 0 84 84">
+                                            <g class="avatar__hexagon">
+                                                <image xlink:href="https://i.imgur.com/Nao5Nvi.png" height="100%"
+                                                    width="100%" />
+                                            </g>
+                                        </svg>
+                                        <h4 class="title title--h5">
+                                            <a class="td-caption" href="#">Châm Ngôn</a>
+                                        </h4>
+                                        <p class="review-item__caption cham-ngon-quote"></p>
+                                    </div>
+                                </div>
+                                <div class="swiper-pagination about-me-pagination"></div>
                             </div>
                         </div>
                         <div class="box-inner box-inner--rounded">
@@ -267,6 +272,7 @@
     </main>
     <script src="./assets/js/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="./assets/js/plugins.js"></script>
     <script src="./assets/js/common.min.js"></script>
     <script src="./assets/js/index.js"></script>
@@ -305,6 +311,41 @@
     }
     document.addEventListener('DOMContentLoaded', function() {
         setRandomQuotes();
+        const swiper = new Swiper('.js-carousel-review', {
+            loop: false,
+            speed: 800,
+            autoplay: {
+                delay: 5000,
+                reverseDirection: false,
+                pauseOnMouseEnter: true,
+                disableOnInteraction: false
+            },
+            pagination: {
+                el: '.about-me-pagination',
+                clickable: true,
+                dynamicBullets: true
+            },
+            slidesPerView: 1,
+            spaceBetween: 20,
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
+            },
+            touchRatio: 1,
+            watchSlidesProgress: true,
+            on: {
+                slideChange: function() {
+                    if (this.isEnd) {
+                        this.params.autoplay.reverseDirection = true;
+                        this.autoplay.start();
+                    } else if (this.isBeginning) {
+                        this.params.autoplay.reverseDirection = false;
+                        this.autoplay.start();
+                    }
+                    setRandomQuotes();
+                }
+            }
+        });
     });
     </script>
 </body>
