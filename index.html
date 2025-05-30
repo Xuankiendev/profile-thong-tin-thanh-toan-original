@@ -123,7 +123,7 @@
                             <h2 class="title title--h3 title__separate">About Me</h2>
                             <div class="swiper-container js-carousel-review">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide review-item">
+                                    <div class="swiper-slide review-item" data-category="tha-thinh">
                                         <svg class="avatar avatar--80" viewBox="0 0 84 84">
                                             <g class="avatar__hexagon">
                                                 <image xlink:href="https://i.imgur.com/pn00UUp.gif" height="100%"
@@ -133,9 +133,9 @@
                                         <h4 class="title title--h5">
                                             <a class="td-caption" href="#">Thả Thính</a>
                                         </h4>
-                                        <p class="review-item__caption">Tuy anh không hoàn hảo, nhưng anh là duy nhất.</p>
+                                        <p class="review-item__caption tha-thinh-quote"></p>
                                     </div>
-                                    <div class="swiper-slide review-item">
+                                    <div class="swiper-slide review-item" data-category="cham-ngon">
                                         <svg class="avatar avatar--80" viewBox="0 0 84 84">
                                             <g class="avatar__hexagon">
                                                 <image xlink:href="https://i.imgur.com/Nao5Nvi.png" height="100%"
@@ -145,7 +145,7 @@
                                         <h4 class="title title--h5">
                                             <a class="td-caption" href="#">Châm Ngôn</a>
                                         </h4>
-                                        <p class="review-item__caption">Nơi đây không phải thiên đình nên quý khách đừng cho mình là thượng đế.</p>
+                                        <p class="review-item__caption cham-ngon-quote"></p>
                                     </div>
                                 </div>
                                 <div class="swiper-pagination"></div>
@@ -296,6 +296,55 @@
             console.error('Lỗi khi sao chép: ', err);
         });
     }
+    // Quote arrays
+    const thaThinhQuotes = [
+        "Tuy anh không hoàn hảo, nhưng anh là duy nhất.",
+        "Anh không hứa cho em cả thế giới, nhưng anh hứa dành cả thế giới để yêu thương và che chở cho em.",
+        "Trái tim anh còn trống, em vào ở được không?",
+        "Anh không phải người hoàn hảo, nhưng anh sẽ dành cả thanh xuân để hoàn thiện vì em."
+    ];
+    const chamNgonQuotes = [
+        "Nơi đây không phải thiên đình nên quý khách đừng cho mình là thượng đế.",
+        "Cuộc sống như một cuốn sách, hãy lật trang mới thay vì đọc đi đọc lại trang cũ.",
+        "Đừng chạy theo những gì lấp lánh, hãy chạy theo những gì khiến bạn hạnh phúc.",
+        "Người thông minh không phải là người biết tất cả, mà là người biết khi nào cần học."
+    ];
+    // Randomize quote function
+    function setRandomQuotes() {
+        const thaThinhElement = document.querySelector('.tha-thinh-quote');
+        const chamNgonElement = document.querySelector('.cham-ngon-quote');
+        const randomThaThinh = thaThinhQuotes[Math.floor(Math.random() * thaThinhQuotes.length)];
+        const randomChamNgon = chamNgonQuotes[Math.floor(Math.random() * chamNgonQuotes.length)];
+        thaThinhElement.textContent = randomThaThinh;
+        chamNgonElement.textContent = randomChamNgon;
+    }
+    // Initialize Swiper with ping-pong effect
+    document.addEventListener('DOMContentLoaded', function() {
+        setRandomQuotes(); // Set initial random quotes
+        const swiper = new Swiper('.js-carousel-review', {
+            loop: false,
+            autoplay: {
+                delay: 3000,
+                reverseDirection: false
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true
+            },
+            on: {
+                slideChange: function() {
+                    if (this.isEnd) {
+                        this.params.autoplay.reverseDirection = true;
+                        this.autoplay.start();
+                    } else if (this.isBeginning) {
+                        this.params.autoplay.reverseDirection = false;
+                        this.autoplay.start();
+                    }
+                    setRandomQuotes(); // Change quotes on slide change
+                }
+            }
+        });
+    });
     </script>
 </body>
 </html>
