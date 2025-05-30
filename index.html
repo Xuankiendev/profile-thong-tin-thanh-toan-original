@@ -33,6 +33,9 @@
         .case-item__caption span:hover {
             text-decoration: underline;
         }
+        .swiper-pagination-bullet {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="bg-triangles">
@@ -268,6 +271,7 @@
     </main>
     <script src="./assets/js/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="./assets/js/plugins.js"></script>
     <script src="./assets/js/common.min.js"></script>
     <script src="./assets/js/index.js"></script>
@@ -299,16 +303,16 @@
         });
     }
     const thaThinhQuotes = [
-        "Tuy anh không hoàn hảo, nhưng anh là duy nhất.",
-        "Anh không hứa cho em cả thế giới, nhưng anh hứa dành cả thế giới để yêu thương và che chở cho em.",
-        "Trái tim anh còn trống, em vào ở được không?",
-        "Anh không phải người hoàn hảo, nhưng anh sẽ dành cả thanh xuân để hoàn thiện vì em."
+        "Anh không đẹp trai, nhưng đủ để khiến bạn tò mò.",
+        "Cà phê thì đắng, còn anh thì thích ngọt ngào với bạn.",
+        "Anh không giỏi toán, nhưng biết tính chuyện tương lai với bạn.",
+        "Mặt trời mọc ở đằng đông, còn anh thì lạc lối vì bạn."
     ];
     const chamNgonQuotes = [
-        "Nơi đây không phải thiên đình nên quý khách đừng cho mình là thượng đế.",
-        "Cuộc sống như một cuốn sách, hãy lật trang mới thay vì đọc đi đọc lại trang cũ.",
-        "Đừng chạy theo những gì lấp lánh, hãy chạy theo những gì khiến bạn hạnh phúc.",
-        "Người thông minh không phải là người biết tất cả, mà là người biết khi nào cần học."
+        "Đừng chờ cơ hội, tự tạo nó mà sống.",
+        "Thành công không phải đích đến, mà là hành trình bạn chọn.",
+        "Học từ thất bại, đừng để nó định nghĩa bạn.",
+        "Thời gian không chờ ai, nhưng bạn có thể đuổi theo nó."
     ];
     function setRandomQuotes() {
         const thaThinhElement = document.querySelector('.tha-thinh-quote');
@@ -324,13 +328,15 @@
             loop: false,
             speed: 800,
             autoplay: {
-                delay: 3000,
+                delay: 5000,
                 reverseDirection: false,
-                pauseOnMouseEnter: true
+                pauseOnMouseEnter: true,
+                disableOnInteraction: false
             },
             pagination: {
                 el: '.swiper-pagination',
-                clickable: true
+                clickable: true,
+                dynamicBullets: true
             },
             slidesPerView: 1,
             spaceBetween: 20,
@@ -338,6 +344,7 @@
             fadeEffect: {
                 crossFade: true
             },
+            touchRatio: 1,
             on: {
                 slideChange: function() {
                     if (this.isEnd) {
