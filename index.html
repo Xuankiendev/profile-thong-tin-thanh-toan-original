@@ -296,6 +296,8 @@
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <script>
+        let isVerified = window.location.pathname === '/';
+
         function onTurnstileSuccess(token) {
             window.location.href = '/vxk/verify';
         }
@@ -303,7 +305,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             if (window.location.pathname === '/vxk/verify') {
                 window.location.href = '/';
-            } else if (window.location.pathname === '/') {
+            } else if (isVerified) {
                 document.getElementById('turnstile-overlay').classList.add('hidden');
                 document.getElementById('main-content').classList.add('visible');
             } else {
