@@ -16,8 +16,7 @@
     <meta property="og:title" content="Profile Thông Tin Thanh Toán - XuanKienWithLove">
     <link rel="shortcut icon" href="https://i.imgur.com/mruOsLm.jpg" />
     <meta property="og:image" content="https://i.imgur.com/NopdDnz.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.m
-in.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="./assets/styles/style.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <link rel="stylesheet" href="./assets/styles/porn-hub.css">
@@ -305,8 +304,13 @@ in.css">
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('turnstile-overlay').classList.remove('hidden');
-            document.getElementById('main-content').classList.remove('visible');
+            if (document.cookie.includes('cf_clearance')) {
+                document.getElementById('turnstile-overlay').classList.add('hidden');
+                document.getElementById('main-content').classList.add('visible');
+            } else {
+                document.getElementById('turnstile-overlay').classList.remove('hidden');
+                document.getElementById('main-content').classList.remove('visible');
+            }
         });
 
         function copyToClipboard(element) {
