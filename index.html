@@ -16,7 +16,8 @@
     <meta property="og:title" content="Profile Thông Tin Thanh Toán - XuanKienWithLove">
     <link rel="shortcut icon" href="https://i.imgur.com/mruOsLm.jpg" />
     <meta property="og:image" content="https://i.imgur.com/NopdDnz.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.m
+in.css">
     <link rel="stylesheet" type="text/css" href="./assets/styles/style.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <link rel="stylesheet" href="./assets/styles/porn-hub.css">
@@ -296,22 +297,16 @@
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <script>
-        let isVerified = window.location.pathname === '/';
-
         function onTurnstileSuccess(token) {
-            window.location.href = '/vxk/verify';
+            setTimeout(function() {
+                document.getElementById('turnstile-overlay').classList.add('hidden');
+                document.getElementById('main-content').classList.add('visible');
+            }, 2000);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            if (window.location.pathname === '/vxk/verify') {
-                window.location.href = '/';
-            } else if (isVerified) {
-                document.getElementById('turnstile-overlay').classList.add('hidden');
-                document.getElementById('main-content').classList.add('visible');
-            } else {
-                document.getElementById('turnstile-overlay').classList.remove('hidden');
-                document.getElementById('main-content').classList.remove('visible');
-            }
+            document.getElementById('turnstile-overlay').classList.remove('hidden');
+            document.getElementById('main-content').classList.remove('visible');
         });
 
         function copyToClipboard(element) {
