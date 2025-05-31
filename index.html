@@ -60,7 +60,7 @@
 </head>
 <body class="bg-triangles">
     <div id="turnstile-overlay">
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAABfVNd2-10jMYn6n" data-theme="dark" data-callback="onTurnstileSuccess" data-action="managed"></div>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAABfVNd2-10jMYn6n" data-theme="dark" data-callback="onTurnstileSuccess" data-action="managed" data-retry="auto"></div>
     </div>
     <div id="main-content" class="hidden">
         <div id="top-td"></div>
@@ -292,6 +292,7 @@
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <script>
         function onTurnstileSuccess(token) {
+            console.log('Turnstile token:', token);
             setTimeout(() => {
                 document.getElementById('turnstile-overlay').classList.add('hidden');
                 document.getElementById('main-content').classList.remove('hidden');
