@@ -26,19 +26,35 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.95);
+            background: #f1f1f1; /* Màu nền sáng, nhẹ nhàng */
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
             flex-direction: column;
+            backdrop-filter: blur(6px); /* Mờ nền nhẹ để văn bản nổi bật */
         }
-        .cf-turnstile { transform: scale(1.3); }
+        .cf-turnstile { transform: scale(1.1); }
+        .verification-text {
+            color: #333333; /* Màu chữ xám tối cho dễ đọc */
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 16px;
+            margin-top: 20px;
+            text-align: center;
+            max-width: 400px;
+            background-color: rgba(255, 255, 255, 0.8); /* Nền trắng nhẹ */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+        }
     </style>
 </head>
 <body>
     <div id="turnstile-overlay">
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAABfVNd2-10jMYn6n" data-theme="dark" data-callback="onTurnstileSuccess" data-action="managed" data-retry="auto"></div>
+    	<p class="verification-text">Captcha Custom By Vũ Xuân Kiên.</p> 
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAABfVNd2-10jMYn6n" data-theme="dark" data-callback="onTurnstileSuccess" databases -action="managed" data-retry="auto"></div>
+        <p class="verification-text">Đang xác minh bạn là con người.</p>
+        <p class="verification-text">Quá trình này có thể mất vài giây. </p>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -47,7 +63,7 @@
             console.log('Turnstile token:', token);
             sessionStorage.setItem('verified', 'true');
             setTimeout(() => {
-                window.location.href = 'https://xuankien.pages.dev/';
+                window.location.href = window.location.origin;
             }, 2000);
         }
     </script>
