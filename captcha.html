@@ -1,69 +1,98 @@
 <!DOCTYPE html>
-<html lang="vi-VN">
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Xác Minh Người Dùng - Vũ Xuân Kiên</title>
-    <meta name="format-detection" content="telephone=no">
-    <meta name="format-detection" content="address=no">
-    <meta name="keywords" content="xuankien, vuxuankien, xuankiendzz">
-    <meta name="description" content="Trang xác minh để truy cập thông tin thanh toán">
-    <meta property="og:description" content="Trang xác minh để truy cập thông tin thanh toán">
-    <meta property="og:type" content="article">
-    <meta property="og:locale" content="vi-VN">
-    <meta property="og:title" content="Xác Minh Người Dùng - Vũ Xuân Kiên">
-    <meta property="og:image" content="https://i.imgur.com/NopdDnz.png">
-    <link rel="shortcut icon" href="https://i.imgur.com/mruOsLm.jpg">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap">
-    <style>
-        .hidden { display: none !important; }
-        #turnstile-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.8); 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            flex-direction: column;
-        }
-        .cf-turnstile { transform: scale(1.1); }
-        .verification-text {
-            color: #333333;
-            font-family: 'Be Vietnam Pro', sans-serif;
-            font-size: 16px;
-            margin-top: 20px;
-            text-align: center;
-            max-width: 400px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xác Minh Người Dùng - Vũ Xuân Kiên</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap" />
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background-color: #0d1117;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      background-color: #161b22;
+      padding: 30px 40px;
+      border-radius: 15px;
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    .box img {
+      width: 100px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+    }
+    .box h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .box p {
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #c9d1d9;
+    }
+    .cf-turnstile {
+      margin: 0 auto 20px;
+      transform: scale(1.05);
+    }
+    .info {
+      font-size: 12px;
+      color: #8b949e;
+      margin-top: 15px;
+    }
+    .highlight {
+      color: #f7768e;
+    }
+  </style>
 </head>
 <body>
-    <div id="turnstile-overlay">
-    	<p class="verification-text">Captcha Custom By Vũ Xuân Kiên.</p> 
-        <div class="cf-turnstile" data-sitekey="0x4AAAAAABfVNd2-10jMYn6n" data-theme="dark" data-callback="onTurnstileSuccess" databases -action="managed" data-retry="auto"></div>
-        <p class="verification-text">Đang xác minh bạn là con người, quá trình này có thể mất vài giây.</p>
+  <div class="box">
+    <img src="https://files.catbox.moe/40aakt.gif" alt="VXKcommunityService">
+    <h1>Loading...!</h1>
+    <p>We're checking your browser. Please complete the captcha below to continue accessing the site.</p>
+    <div class="cf-turnstile" data-sitekey="0x4AAAAAABfVNd2-10jMYn6n" data-theme="dark" data-callback="onTurnstileSuccess"></div>
+    <div class="info">
+      IP: <span id="ip-address" class="highlight">Loading...</span><br>
+      Ray-ID: <span id="ray-id" class="highlight">Generating...</span><br>
+      Protected by <span class="highlight">VuXuanKien</span> Firewall
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    <script>
-        function onTurnstileSuccess(token) {
-            console.log('Turnstile token:', token);
-            sessionStorage.setItem('verified', 'true');
-            setTimeout(() => {
-                window.location.href = window.location.origin;
-            }, 2000);
-        }
-    </script>
+  </div>
+  <script>
+    function onTurnstileSuccess(token) {
+      sessionStorage.setItem("verified", "true");
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+    }
+
+    fetch("https://ipinfo.io/json")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("ip-address").textContent = data.ip || "Unknown";
+      })
+      .catch(() => {
+        document.getElementById("ip-address").textContent = "Unknown";
+      });
+
+    function generateRayID() {
+      const chars = "abcdef0123456789";
+      let id = "";
+      for (let i = 0; i < 16; i++) {
+        id += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return id;
+    }
+
+    document.getElementById("ray-id").textContent = generateRayID();
+  </script>
 </body>
 </html>
