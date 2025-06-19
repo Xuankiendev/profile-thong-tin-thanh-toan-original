@@ -76,9 +76,7 @@
     if (window.location.pathname === "/_cf_check") {
       const params = new URLSearchParams(window.location.search);
       if (params.has("_cf_lk")) {
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 2000);
+        window.location.href = "/";
       }
     }
 
