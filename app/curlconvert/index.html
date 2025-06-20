@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Curl Converter</title>
+<style>
+  * { box-sizing: border-box; }
+  
+  body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    margin: 0; 
+    padding: 20px;
+    background: #1a1a1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+  }
+  
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #2d2d2d;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  
+  h1 {
+    text-align: center;
+    margin: 0 0 30px 0;
+    color: #4a9eff;
+    font-size: 2.2em;
+    font-weight: 300;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #b0b0b0;
+  }
+  
+  textarea {
+    width: 100%;
+    height: 150px;
+    padding: 15px;
+    background: #1e1e1e;
+    border: 2px solid #404040;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+  }
+  
+  textarea:focus {
+    outline: none;
+    border-color: #4a9eff;
+    box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.1);
+  }
+  
+  textarea::placeholder {
+    color: #666;
+  }
+  
+  .controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  select {
+    padding: 12px 15px;
+    background: #1e1e1e;
+    border: 2px solid #404040;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-size: 14px;
+    min-width: 180px;
+    transition: border-color 0.3s ease;
+  }
+  
+  select:focus {
+    outline: none;
+    border-color: #4a9eff;
+  }
+  
+  button {
+    padding: 12px 25px;
+    background: #4a9eff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
+    background: #357abd;
+    transform: translateY(-1px);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+  
+  .clear-btn {
+    background: #dc3545;
+  }
+  
+  .clear-btn:hover {
+    background: #c82333;
+  }
+  
+  .output-section {
+    position: relative;
+  }
+  
+  .copy-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 6px 12px;
+    font-size: 12px;
+    background: #28a745;
+    z-index: 10;
+  }
+  
+  .copy-btn:hover {
+    background: #218838;
+  }
+  
+  pre {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    padding: 20px;
+    padding-top: 50px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    min-height: 200px;
+    max-height: 500px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    border: 2px solid #404040;
+    position: relative;
+  }
+  
+  .error {
+    background: #4a1e1e;
+    border-color: #dc3545;
+    color: #ffb3b3;
+  }
+  
+  .success {
+    border-color: #28a745;
+  }
+  
+  .examples {
+    margin-top: 30px;
+    padding: 20px;
+    background: #252525;
+    border-radius: 8px;
+    border: 1px solid #404040;
+  }
+  
+  .examples h3 {
+    margin-top: 0;
+    color: #4a9eff;
+    font-size: 1.1em;
+  }
+  
+  .example-item {
+    margin: 15px 0;
+    padding: 12px;
+    background: #1e1e1e;
+    border-radius: 5px;
+    border-left: 3px solid #4a9eff;
+  }
+  
+  .example-item strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #b0b0b0;
+    font-size: 0.9em;
+  }
+  
+  .example-item code {
+    background: #333;
+    color: #4a9eff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    word-break: break-all;
+  }
+  
+  @media (max-width: 768px) {
+    .controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    select, button {
+      width: 100%;
+    }
+    
+    .copy-btn {
+      position: static;
+      margin-bottom: 10px;
+      width: 100%;
+    }
+    
+    pre {
+      padding-top: 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🔄 Curl Converter</h1>
+  
+  <div class="form-group">
+    <label for="curlInput">Curl Command:</label>
+    <textarea id="curlInput" placeholder="Dán curl command của bạn vào đây...
+Ví dụ: curl -X POST https://api.example.com/data -H 'Content-Type: application/json' -d '{\"name\": \"John\", \"age\": 30}'"></textarea>
+  </div>
+  
+  <div class="controls">
+    <select id="langSelect">
+      <option value="python">Python (requests)</option>
+      <option value="javascript">JavaScript (fetch)</option>
+    </select>
+    <button id="convertBtn">🚀 Convert</button>
+    <button id="clearBtn" class="clear-btn">🗑️ Clear</button>
+  </div>
+  
+  <div class="output-section">
+    <button id="copyBtn" class="copy-btn" style="display: none;">📋 Copy</button>
+    <pre id="output">Sẵn sàng convert curl command của bạn...</pre>
+  </div>
+  
+  <div class="examples">
+    <h3>📚 Ví dụ Curl Commands:</h3>
+    <div class="example-item">
+      <strong>GET request đơn giản:</strong>
+      <code>curl https://api.github.com/users/octocat</code>
+    </div>
+    <div class="example-item">
+      <strong>POST với JSON data:</strong>
+      <code>curl -X POST https://httpbin.org/post -H "Content-Type: application/json" -d '{"name": "John", "age": 30}'</code>
+    </div>
+    <div class="example-item">
+      <strong>Với authentication:</strong>
+      <code>curl -H "Authorization: Bearer token123" https://api.example.com/protected</code>
+    </div>
+  </div>
+</div>
+
+<script>
+class CurlConverter {
+  constructor() {
+    this.curlInput = document.getElementById("curlInput");
+    this.langSelect = document.getElementById("langSelect");
+    this.convertBtn = document.getElementById("convertBtn");
+    this.clearBtn = document.getElementById("clearBtn");
+    this.copyBtn = document.getElementById("copyBtn");
+    this.output = document.getElementById("output");
+    
+    this.initEventListeners();
+  }
+  
+  initEventListeners() {
+    this.convertBtn.onclick = () => this.convert();
+    this.clearBtn.onclick = () => this.clear();
+    this.copyBtn.onclick = () => this.copyToClipboard();
+    
+    // Auto-convert khi thay đổi ngôn ngữ
+    this.langSelect.onchange = () => {
+      if (this.curlInput.value.trim()) {
+        this.convert();
+      }
+    };
+    
+    // Convert với Ctrl+Enter
+    this.curlInput.onkeydown = (e) => {
+      if (e.ctrlKey && e.key === 'Enter') {
+        this.convert();
+      }
+    };
+  }
+  
+  parseCurl(curlCommand) {
+    const result = {
+      method: 'GET',
+      url: '',
+      headers: {},
+      data: null
+    };
+    
+    // Làm sạch command
+    let cmd = curlCommand.trim();
+    
+    // Loại bỏ 'curl' ở đầu
+    cmd = cmd.replace(/^curl\s+/i, '');
+    
+    // Tách các phần của command bằng regex phức tạp hơn
+    const parts = [];
+    let current = '';
+    let inQuotes = false;
+    let quoteChar = '';
+    
+    for (let i = 0; i < cmd.length; i++) {
+      const char = cmd[i];
+      
+      if ((char === '"' || char === "'") && !inQuotes) {
+        inQuotes = true;
+        quoteChar = char;
+        current += char;
+      } else if (char === quoteChar && inQuotes) {
+        inQuotes = false;
+        quoteChar = '';
+        current += char;
+      } else if (char === ' ' && !inQuotes) {
+        if (current.trim()) {
+          parts.push(current.trim());
+          current = '';
+        }
+      } else {
+        current += char;
+      }
+    }
+    
+    if (current.trim()) {
+      parts.push(current.trim());
+    }
+    
+    // Parse các parts
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      
+      // URL (không bắt đầu bằng -)
+      if (!part.startsWith('-') && part.includes('.') && !result.url) {
+        result.url = part.replace(/^['"]|['"]$/g, '');
+      }
+      
+      // Method
+      else if (part === '-X' && i + 1 < parts.length) {
+        result.method = parts[i + 1].replace(/^['"]|['"]$/g, '').toUpperCase();
+        i++; // skip next part
+      }
+      
+      // Headers
+      else if (part === '-H' && i + 1 < parts.length) {
+        const header = parts[i + 1].replace(/^['"]|['"]$/g, '');
+        const colonIndex = header.indexOf(':');
+        if (colonIndex > 0) {
+          const key = header.substring(0, colonIndex).trim();
+          const value = header.substring(colonIndex + 1).trim();
+          result.headers[key] = value;
+        }
+        i++; // skip next part
+      }
+      
+      // Data
+      else if (part === '-d' && i + 1 < parts.length) {
+        result.data = parts[i + 1].replace(/^['"]|['"]$/g, '');
+        i++; // skip next part
+      }
+      
+      // Combined options như -H"header" hoặc -d"data"
+      else if (part.startsWith('-H')) {
+        const header = part.substring(2).replace(/^['"]|['"]$/g, '');
+        const colonIndex = header.indexOf(':');
+        if (colonIndex > 0) {
+          const key = header.substring(0, colonIndex).trim();
+          const value = header.substring(colonIndex + 1).trim();
+          result.headers[key] = value;
+        }
+      }
+      
+      else if (part.startsWith('-d')) {
+        result.data = part.substring(2).replace(/^['"]|['"]$/g, '');
+      }
+    }
+    
+    return result;
+  }
+  
+  generatePython(parsed) {
+    let code = "import requests\nimport json\n\n";
+    
+    code += `url = "${parsed.url}"\n`;
+    
+    if (Object.keys(parsed.headers).length > 0) {
+      code += "\nheaders = {\n";
+      for (const [key, value] of Object.entries(parsed.headers)) {
+        code += `    "${key}": "${value}",\n`;
+      }
+      code += "}\n";
+    }
+    
+    if (parsed.data) {
+      // Kiểm tra xem data có phải JSON không
+      let isJson = false;
+      try {
+        JSON.parse(parsed.data);
+        isJson = true;
+      } catch (e) {
+        isJson = false;
+      }
+      
+      if (isJson) {
+        code += `\ndata = ${parsed.data}\n`;
+      } else {
+        code += `\ndata = "${parsed.data}"\n`;
+      }
+    }
+    
+    code += "\n";
+    
+    // Tạo request
+    code += `response = requests.${parsed.method.toLowerCase()}(url`;
+    
+    if (Object.keys(parsed.headers).length > 0) {
+      code += ", headers=headers";
+    }
+    
+    if (parsed.data) {
+      // Kiểm tra content-type để quyết định dùng json= hay data=
+      const contentType = parsed.headers['Content-Type'] || parsed.headers['content-type'] || '';
+      if (contentType.includes('application/json')) {
+        code += ", json=data";
+      } else {
+        code += ", data=data";
+      }
+    }
+    
+    code += ")\n\n";
+    code += "print(f\"Status Code: {response.status_code}\")\n";
+    code += "print(f\"Response: {response.text}\")\n";
+    
+    return code;
+  }
+  
+  generateJavaScript(parsed) {
+    let code = "";
+    
+    // Headers
+    if (Object.keys(parsed.headers).length > 0) {
+      code += "const headers = {\n";
+      for (const [key, value] of Object.entries(parsed.headers)) {
+        code += `  "${key}": "${value}",\n`;
+      }
+      code += "};\n\n";
+    }
+    
+    // Options object
+    code += "const options = {\n";
+    code += `  method: "${parsed.method}",\n`;
+    
+    if (Object.keys(parsed.headers).length > 0) {
+      code += "  headers: headers,\n";
+    }
+    
+    if (parsed.data) {
+      const contentType = parsed.headers['Content-Type'] || parsed.headers['content-type'] || '';
+      if (contentType.includes('application/json')) {
+        // Kiểm tra xem data đã là JSON string chưa
+        let jsonData;
+        try {
+          JSON.parse(parsed.data);
+          jsonData = parsed.data;
+        } catch (e) {
+          jsonData = `"${parsed.data}"`;
+        }
+        code += `  body: JSON.stringify(${jsonData}),\n`;
+      } else {
+        code += `  body: "${parsed.data}",\n`;
+      }
+    }
+    
+    code += "};\n\n";
+    
+    // Fetch request
+    code += `fetch("${parsed.url}", options)\n`;
+    code += "  .then(response => {\n";
+    code += "    console.log('Status:', response.status);\n";
+    code += "    return response.text();\n";
+    code += "  })\n";
+    code += "  .then(data => {\n";
+    code += "    console.log('Response:', data);\n";
+    code += "  })\n";
+    code += "  .catch(error => {\n";
+    code += "    console.error('Error:', error);\n";
+    code += "  });";
+    
+    return code;
+  }
+  
+  convert() {
+    const curlCommand = this.curlInput.value.trim();
+    
+    if (!curlCommand) {
+      this.showOutput("Vui lòng nhập curl command.", "error");
+      return;
+    }
+    
+    try {
+      const parsed = this.parseCurl(curlCommand);
+      
+      if (!parsed.url) {
+        this.showOutput("Không tìm thấy URL trong curl command.", "error");
+        return;
+      }
+      
+      let code = "";
+      
+      switch (this.langSelect.value) {
+        case "python":
+          code = this.generatePython(parsed);
+          break;
+        case "javascript":
+          code = this.generateJavaScript(parsed);
+          break;
+        default:
+          code = "Ngôn ngữ không được hỗ trợ";
+      }
+      
+      this.showOutput(code, "success");
+      
+    } catch (error) {
+      this.showOutput(`Lỗi khi parse curl command:\n${error.message}`, "error");
+    }
+  }
+  
+  showOutput(text, type = "success") {
+    this.output.textContent = text;
+    this.output.className = type;
+    
+    if (type === "success" && text !== "Sẵn sàng convert curl command của bạn...") {
+      this.copyBtn.style.display = "block";
+    } else {
+      this.copyBtn.style.display = "none";
+    }
+  }
+  
+  clear() {
+    this.curlInput.value = "";
+    this.showOutput("Sẵn sàng convert curl command của bạn...");
+  }
+  
+  async copyToClipboard() {
+    try {
+      await navigator.clipboard.writeText(this.output.textContent);
+      
+      const originalText = this.copyBtn.textContent;
+      this.copyBtn.textContent = "✅ Copied!";
+      this.copyBtn.style.background = "#28a745";
+      
+      setTimeout(() => {
+        this.copyBtn.textContent = originalText;
+        this.copyBtn.style.background = "#28a745";
+      }, 2000);
+      
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      
+      // Fallback cho browsers không hỗ trợ clipboard API
+      const textArea = document.createElement("textarea");
+      textArea.value = this.output.textContent;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        this.copyBtn.textContent = "✅ Copied!";
+      } catch (fallbackErr) {
+        console.error('Fallback copy failed: ', fallbackErr);
+      }
+      
+      document.body.removeChild(textArea);
+    }
+  }
+}
+
+// Khởi tạo ứng dụng
+new CurlConverter();
+</script>
+
+</body>
+</html>
