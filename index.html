@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Xác Minh Người Dùng - Vũ Xuân Kiên</title>
+  <title>Đang xác thực - Vũ Xuân Kiên</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700&display=swap" />
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <style>
@@ -52,10 +52,23 @@
     .highlight {
       color: #f7768e;
     }
+    .redirect-box {
+      background-color: #ffffff;
+      color: #000000;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .redirect-box img {
+      width: 80px;
+    }
   </style>
 </head>
 <body>
-  <div class="box">
+  <div class="box" id="verification-box">
     <img src="https://files.catbox.moe/40aakt.gif" alt="VXKcommunityService">
     <h1>-> Loading <-</h1>
     <p>We're checking your browser. Please complete the captcha below to continue accessing the site.</p>
@@ -66,18 +79,18 @@
       Protected BY <span class="highlight">VuXuanKien</span> FireWall
     </div>
   </div>
+
+  <div class="redirect-box" id="redirect-box" style="display: none;">
+    <a href="https://t.me/xkprj" target="_blank">
+      <img src="https://telegram.org/img/t_logo.png" alt="Telegram">
+    </a>
+  </div>
+
   <script>
     function onTurnstileSuccess(token) {
-      sessionStorage.setItem("verified", "true");
-      const tempUrl = `/_cf_check?_cf_lk=${token}`;
-      window.location.href = tempUrl;
-    }
-
-    if (window.location.pathname === "/_cf_check") {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has("_cf_lk")) {
-        window.location.href = "/";
-      }
+      document.title = "Đang chuyển hướng - Vũ Xuân Kiên";
+      document.getElementById("verification-box").style.display = "none";
+      document.getElementById("redirect-box").style.display = "flex";
     }
 
     fetch("https://ipinfo.io/json")
