@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room - Phòng trò chuyện</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1e1e1e;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            height: 90vh;
+            background: #252526;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dark-mode {
+            background: #1e1e1e;
+        }
+
+        .dark-mode .container {
+            background: #252526;
+            color: #d4d4d4;
+        }
+
+        .dark-mode .chat-header {
+            background: #2d2d2d;
+        }
+
+        .dark-mode .message-bubble {
+            background: #3c3c3c;
+            color: #d4d4d4;
+        }
+
+        .dark-mode .message.own .message-bubble {
+            background: linear-gradient(135deg, #0e639c 0%, #007acc 100%);
+            color: #d4d4d4;
+        }
+
+        .dark-mode .input-area {
+            background: #2d2d2d;
+            border-top: 1px solid #3c3c3c;
+        }
+
+        .dark-mode .message-input {
+            border: 2px solid #3c3c3c;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        .dark-mode .message-input:focus {
+            border-color: #007acc;
+        }
+
+        .dark-mode .join-btn {
+            background: linear-gradient(135deg, #0e639c 0%, #007acc 100%);
+        }
+
+        .dark-mode .send-btn {
+            background: linear-gradient(135deg, #0e639c 0%, #007acc 100%);
+        }
+
+        .light-mode {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .light-mode .container {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+        }
+
+        .light-mode .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .light-mode .message-bubble {
+            background: #f1f3f5;
+            color: #333;
+        }
+
+        .light-mode .message.own .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .light-mode .input-area {
+            background: #f8f9fa;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .light-mode .message-input {
+            border: 2px solid #e1e5e9;
+            background: white;
+            color: #333;
+        }
+
+        .light-mode .message-input:focus {
+            border-color: #667eea;
+        }
+
+        .light-mode .join-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .light-mode .send-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .login-screen h1 {
+            color: #d4d4d4;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .login-screen p {
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #3c3c3c;
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        .input-group input:focus {
+            border-color: #007acc;
+            box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.1);
+        }
+
+        .join-btn {
+            padding: 15px 30px;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 122, 204, 0.3);
+        }
+
+        .join-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 122, 204, 0.4);
+        }
+
+        .chat-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-header {
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-title {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .leave-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .leave-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .theme-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .message.own {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            max-width: 70%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.own .message-content {
+            align-items: flex-end;
+        }
+
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-bottom-left-radius: 5px;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .message.own .message-bubble {
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-info {
+            font-size: 12px;
+            color: #888;
+            margin: 5px 8px 0;
+        }
+
+        .message.own .message-info {
+            text-align: right;
+        }
+
+        .input-area {
+            padding: 20px;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 25px;
+            resize: none;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            max-height: 100px;
+            min-height: 44px;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn {
+            width: 44px;
+            height: 44px;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 122, 204, 0.3);
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .profile-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #3c3c3c;
+        }
+
+        .profile-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .avatar-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .post-input {
+            padding: 12px 20px;
+            border: 2px solid #3c3c3c;
+            border-radius: 25px;
+            resize: none;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        .post-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #0e639c 0%, #007acc 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 122, 204, 0.3);
+        }
+
+        .post-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 122, 204, 0.4);
+        }
+
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .post {
+            background: #3c3c3c;
+            padding: 15px;
+            border-radius: 10px;
+            color: #d4d4d4;
+        }
+
+        .post img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                height: 100vh;
+                border-radius: 0;
+                max-width: 100%;
+            }
+
+            .messages-container {
+                padding: 15px;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .login-screen {
+                padding: 20px;
+            }
+
+            .login-screen h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <div class="container">
+        <div class="login-screen" id="loginScreen">
+            <h1>🌟 Chat Room</h1>
+            <p>Tham gia phòng trò chuyện cùng mọi người</p>
+            <div class="login-form">
+                <div class="input-group">
+                    <input type="text" id="usernameInput" placeholder="Nhập tên của bạn..." maxlength="20">
+                </div>
+                <button class="join-btn" onclick="joinChat()">Tham gia Chat</button>
+            </div>
+        </div>
+
+        <div class="chat-screen" id="chatScreen">
+            <div class="chat-header">
+                <div class="chat-title">💬 Phòng trò chuyện</div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar"></div>
+                    <span id="currentUsername"></span>
+                    <button class="profile-btn" onclick="showProfile()">Trang cá nhân</button>
+                    <button class="theme-btn" onclick="toggleTheme()">Đổi giao diện</button>
+                    <button class="leave-btn" onclick="leaveChat()">Rời khỏi</button>
+                </div>
+            </div>
+
+            <div class="messages-container" id="messagesContainer">
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea 
+                        class="message-input" 
+                        id="messageInput" 
+                        placeholder="Nhập tin nhắn..."
+                        rows="1"
+                        onkeydown="handleKeyPress(event)"
+                    ></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-screen" id="profileScreen">
+            <div class="profile-header">
+                <div class="chat-title">Trang cá nhân</div>
+                <button class="leave-btn" onclick="backToChat()">Quay lại</button>
+            </div>
+            <div class="profile-content">
+                <div class="avatar-upload">
+                    <img id="avatarPreview" class="avatar-preview" src="">
+                    <input type="file" id="avatarInput" accept="image/*">
+                    <button class="post-btn" onclick="uploadAvatar()">Đổi Avatar</button>
+                </div>
+                <div class="post-form">
+                    <textarea class="post-input" id="postInput" placeholder="Viết bài đăng..." rows="4"></textarea>
+                    <input type="file" id="postImage" accept="image/*">
+                    <button class="post-btn" onclick="createPost()">Đăng bài</button>
+                </div>
+                <div class="posts-container" id="postsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let messages = [];
+        let posts = [];
+        let lastMessageCount = 0;
+        let isDarkMode = true;
+
+        const colors = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57',
+            '#FF9F43', '#EE5A6F', '#0FB9B1', '#574B90', '#FD79A8'
+        ];
+
+        function getColorForUser(username) {
+            let hash = 0;
+            for (let i = 0; i < username.length; i++) {
+                hash = username.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return colors[Math.abs(hash) % colors.length];
+        }
+
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.className = isDarkMode ? 'dark-mode' : 'light-mode';
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        }
+
+        function joinChat() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (!username) {
+                alert('Vui lòng nhập tên của bạn!');
+                return;
+            }
+
+            currentUser = {
+                name: username,
+                color: getColorForUser(username),
+                joinTime: Date.now(),
+                avatar: localStorage.getItem(`avatar_${username}`) || ''
+            };
+
+            document.getElementById('currentUsername').textContent = username;
+            document.getElementById('userAvatar').textContent = getInitials(username);
+            document.getElementById('userAvatar').style.backgroundColor = currentUser.color;
+            if (currentUser.avatar) {
+                document.getElementById('userAvatar').style.backgroundImage = `url(${currentUser.avatar})`;
+                document.getElementById('userAvatar').textContent = '';
+            }
+
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('chatScreen').style.display = 'flex';
+
+            loadMessages();
+            setInterval(loadMessages, 1000);
+            addSystemMessage(`${username} đã tham gia phòng chat`);
+        }
+
+        function leaveChat() {
+            if (currentUser) {
+                addSystemMessage(`${currentUser.name} đã rời khỏi phòng chat`);
+                currentUser = null;
+            }
+
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('chatScreen').style.display = 'none';
+            document.getElementById('profileScreen').style.display = 'none';
+            document.getElementById('usernameInput').value = '';
+            document.getElementById('messagesContainer').innerHTML = '';
+        }
+
+        function showProfile() {
+            document.getElementById('chatScreen').style.display = 'none';
+            document.getElementById('profileScreen').style.display = 'flex';
+            loadProfile();
+        }
+
+        function backToChat() {
+            document.getElementById('profileScreen').style.display = 'none';
+            document.getElementById('chatScreen').style.display = 'flex';
+        }
+
+        function uploadAvatar() {
+            const fileInput = document.getElementById('avatarInput');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUser.avatar = e.target.result;
+                    localStorage.setItem(`avatar_${currentUser.name}`, currentUser.avatar);
+                    document.getElementById('avatarPreview').src = currentUser.avatar;
+                    document.getElementById('userAvatar').style.backgroundImage = `url(${currentUser.avatar})`;
+                    document.getElementById('userAvatar').textContent = '';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function createPost() {
+            const postText = document.getElementById('postInput').value.trim();
+            const postImage = document.getElementById('postImage').files[0];
+            let postImageUrl = '';
+
+            if (!postText && !postImage) return;
+
+            if (postImage) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    postImageUrl = e.target.result;
+                    savePost(postText, postImageUrl);
+                };
+                reader.readAsDataURL(postImage);
+            } else {
+                savePost(postText, postImageUrl);
+            }
+        }
+
+        function savePost(text, imageUrl) {
+            const post = {
+                id: Date.now() + Math.random(),
+                username: currentUser.name,
+                text: text,
+                image: imageUrl,
+                timestamp: Date.now()
+            };
+            posts.push(post);
+            localStorage.setItem(`posts_${currentUser.name}`, JSON.stringify(posts));
+            displayPost(post);
+            document.getElementById('postInput').value = '';
+            document.getElementById('postImage').value = '';
+        }
+
+        function displayPost(post) {
+            const container = document.getElementById('postsContainer');
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post';
+            postDiv.innerHTML = `
+                <div>${escapeHtml(post.text)}</div>
+                ${post.image ? `<img src="${post.image}" alt="Post image">` : ''}
+                <div class="message-info">${formatTime(post.timestamp)}</div>
+            `;
+            container.prepend(postDiv);
+        }
+
+        function loadProfile() {
+            const avatar = localStorage.getItem(`avatar_${currentUser.name}`);
+            if (avatar) {
+                document.getElementById('avatarPreview').src = avatar;
+            }
+            posts = JSON.parse(localStorage.getItem(`posts_${currentUser.name}`)) || [];
+            document.getElementById('postsContainer').innerHTML = '';
+            posts.forEach(displayPost);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const messageText = input.value.trim();
+
+            if (!messageText || !currentUser) return;
+
+            const message = {
+                id: Date.now() + Math.random(),
+                username: currentUser.name,
+                text: messageText,
+                timestamp: Date.now(),
+                color: currentUser.color,
+                avatar: currentUser.avatar
+            };
+
+            addMessage(message);
+            input.value = '';
+            adjustTextareaHeight();
+        }
+
+        function addMessage(message) {
+            messages.push(message);
+            localStorage.setItem('chatMessages', JSON.stringify(messages));
+            displayMessage(message);
+            scrollToBottom();
+        }
+
+        function addSystemMessage(text) {
+            const message = {
+                id: Date.now() + Math.random(),
+                username: 'Hệ thống',
+                text: text,
+                timestamp: Date.now(),
+                color: '#888',
+                isSystem: true
+            };
+            addMessage(message);
+        }
+
+        function displayMessage(message) {
+            const container = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.username === currentUser?.name ? 'own' : ''}`;
+
+            if (message.isSystem) {
+                messageDiv.innerHTML = `
+                    <div style="text-align: center; width: 100%; color: #888; font-style: italic; font-size: 14px;">
+                        ${message.text}
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-avatar" style="background-color: ${message.color}; ${message.avatar ? `background-image: url(${message.avatar}); background-size: cover;` : ''}">
+                        ${message.avatar ? '' : getInitials(message.username)}
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            ${escapeHtml(message.text)}
+                        </div>
+                        <div class="message-info">
+                            ${message.username} • ${formatTime(message.timestamp)}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.appendChild(messageDiv);
+        }
+
+        function loadMessages() {
+            const savedMessages = localStorage.getItem('chatMessages');
+            if (savedMessages) {
+                const allMessages = JSON.parse(savedMessages);
+                
+                if (allMessages.length > lastMessageCount) {
+                    const newMessages = allMessages.slice(lastMessageCount);
+                    newMessages.forEach(message => {
+                        if (message.username !== currentUser?.name || message.isSystem) {
+                            displayMessage(message);
+                        }
+                    });
+                    scrollToBottom();
+                }
+                
+                lastMessageCount = allMessages.length;
+                messages = allMessages;
+
+                const cutoffTime = Date.now() - (24 * 60 * 60 * 1000);
+                messages = messages.filter(msg => msg.timestamp > cutoffTime);
+                localStorage.setItem('chatMessages', JSON.stringify(messages));
+            }
+        }
+
+        function scrollToBottom() {
+            const container = document.getElementById('messagesContainer');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('vi-VN', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function adjustTextareaHeight() {
+            const textarea = document.getElementById('messageInput');
+            textarea.style.height = '44px';
+            textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
+        }
+
+        document.getElementById('messageInput').addEventListener('input', adjustTextareaHeight);
+
+        document.getElementById('usernameInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                joinChat();
+            }
+        });
+
+        window.addEventListener('load', function() {
+            const savedTheme = localStorage.getItem('theme');
+            isDarkMode = savedTheme !== 'light';
+            document.body.className = isDarkMode ? 'dark-mode' : 'light-mode';
+        });
+
+        window.addEventListener('beforeunload', function() {
+            if (currentUser) {
+                addSystemMessage(`${currentUser.name} đã rời khỏi phòng chat`);
+            }
+        });
+
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'chatMessages') {
+                loadMessages();
+            }
+        });
+    </script>
+</body>
+</html>
